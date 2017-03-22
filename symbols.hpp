@@ -4,8 +4,9 @@
 #include <unordered_map>
 
 
-/// A symbol is a pointer to a string the symbol table.
-using symbol = const std::string*;
+/// A symbol is essentially a constant string. These are generally passed by
+/// pointer or by reference since they refer to objects in the symbol table.
+using symbol = const std::string;
 
 
 /// The symbol table stores the strings representing each identifer in
@@ -16,11 +17,11 @@ struct symbol_table
 {
   /// Inserts a new symbol into the symbol table. If the symbol already
   /// exists, no changes are made. Returns the inserted or existing symbol.
-  symbol insert(const std::string&);
+  symbol* insert(const std::string&);
 
   /// Returns the symbol corresponding to the string. If the symbol is not
   /// in the table, this returns nullptr.
-  symbol find(const std::string&);
+  symbol* find(const std::string&);
 
 private:
   std::unordered_map<std::string, void*> syms;

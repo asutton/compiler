@@ -25,8 +25,10 @@ enum token_kind {
   eq_tok,
 
   // Keywords
-  true_kw,
+  bool_kw,
   false_kw,
+  int_kw,
+  true_kw,
   var_kw,
 
   // Classes
@@ -51,8 +53,18 @@ struct token
 
   token(token_kind k) : kind(k) { }
 
+  /// Returns the name of the token kind.
+  static const char* name(token_kind);
+
   /// Returns the token name.
-  const char* name() const;
+  const char* name() const { return name(kind); }
+
+  /// Returns the spelling of the token kind.
+  static const char* str(token_kind);
+
+  /// Returns the spelling of the tokens. This can be overriden for tokens
+  /// with custom attributes.
+  virtual std::string str() const { return str(kind); }
 
   token_kind kind;
 };
@@ -63,6 +75,8 @@ struct int_token : token
 {
   int_token(int n) : token(int_tok), value(n) { }
   
+  std::string str() const override;
+
   /// The integer value.
   int value;
 };
@@ -73,13 +87,13 @@ struct int_token : token
 /// \todo This should be a pointer to the symbol stored in the symbol table.
 struct id_token : token
 {
-  id_token(symbol s) : token(id_tok), sym(s) { }
+  id_token(symbol* s) : token(id_tok), sym(s) { }
 
   /// Returns the string representation of the identifier.
-  const std::string& str() const { return *sym; }
+  std::string str() const override { return *sym; }
   
   /// The symbol spelling the identifier.
-  symbol sym;
+  symbol* sym;
 };
 
 

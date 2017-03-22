@@ -34,6 +34,12 @@ lexer::lexer(const keyword_table& kt, symbol_table& st, const std::string& str)
   : lexer(kt, st, &str[0], &str[0] + str.size())
 { }
 
+lexer::~lexer()
+{
+  for (token* tok : toks)
+    delete tok;
+}
+
 bool
 lexer::eof() const
 {
@@ -64,9 +70,13 @@ lexer::ignore()
 token*
 lexer::lex()
 {
+  // Quick exit if we're the end of file.
+  if (eof())
+    return nullptr;
+
   buf.clear(); // Reset the character buffer.
   space(); // Consume preceding whitespace.
-  while (first != limit) {
+  while (!eof()) {
     switch (*first) {
       case '(':
         return puncop(lparen_tok);
@@ -89,7 +99,7 @@ lexer::lex()
       case '%':
         return puncop(rem_tok);
       case '=':
-        return puncop(rem_tok);
+        return puncop(eq_tok);
       default:
         if (is_digit(lookahead()))
           return integer();
@@ -114,7 +124,9 @@ token*
 lexer::puncop(token_kind k)
 {
   ignore(); // We don't need the character.
-  return new token(k);
+  token* tok = new token(k);
+  toks.push_back(tok);
+  return tok;
 }
 
 token*
@@ -129,12 +141,17 @@ lexer::word()
 
   // Did we lex a keyword? If so, return a new token.
   auto iter = kws->find(buf);
-  if (iter != kws->end())
-    return new token(iter->second);
+  if (iter != kws->end()) {
+    token *tok = new token(iter->second);
+    toks.push_back(tok);
+    return tok;
+  }
 
   // Otherwise, this is an identifier.
-  symbol sym = syms->insert(buf);
-  return new id_token(sym);
+  symbol* sym = syms->insert(buf);
+  token* tok = new id_token(sym);
+  toks.push_back(tok);
+  return tok;
 }
 
 token*
@@ -148,5 +165,7 @@ lexer::integer()
     consume();
 
   // Create the integer token.
-  return new int_token(std::stoi(buf));
+  token* tok = new int_token(std::stoi(buf));
+  toks.push_back(tok);
+  return tok;
 }

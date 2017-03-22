@@ -7,6 +7,7 @@ struct decl;
 /// The base class of all expressions in the language.
 struct expr
 {
+  expr(type* t) : ty(t) { }
   virtual ~expr() = default;
 
   /// The type of the expression.
@@ -17,6 +18,9 @@ struct expr
 /// Represents boolean literals.
 struct bool_expr : expr
 {
+  bool_expr(type* t, bool b) : expr(t), value(b) { }
+  
+  /// The value of the literal expression.
   bool value;
 };
 
@@ -24,6 +28,9 @@ struct bool_expr : expr
 /// Represents integer literals.
 struct int_expr : expr
 {
+  int_expr(type* t, int n) : expr(t), value(n) { }
+
+  /// The value of the literal expression.
   int value;
 };
 
@@ -31,7 +38,7 @@ struct int_expr : expr
 /// Represents a reference to a declaration.
 struct ref_expr : expr
 {
-  ref_expr(decl* d) : ref(d) { }
+  ref_expr(type* t, decl* d) : expr(t), ref(d) { }
 
   /// The referenced declration.
   decl* ref;

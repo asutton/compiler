@@ -6,9 +6,11 @@ add_executable(compile
   symbols.cpp 
   tokens.cpp
   lexer.cpp
-
+  parser.cpp
+  translator.cpp
   types.cpp
   exprs.cpp
   decls.cpp
   stmts.cpp
+  context.cpp
 )

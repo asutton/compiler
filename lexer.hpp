@@ -2,6 +2,8 @@
 
 #include "tokens.hpp"
 
+#include <vector>
+
 
 /// The lexer is responsible for transforming input chracters into tokens
 /// according to the following rules.
@@ -27,13 +29,13 @@
 ///   letter -> [a-zA-Z]
 ///
 /// The lexer operates over a range of characters, represented by a pair of
-/// pointers. It produces one token at a time by calling the lex function.
-/// Note that the caller is responsible for deallocating the token.
-/// produces one token at using the lex() function.
+/// pointers. Tokens created by the lexer are destroyed along with the
+/// lexer.
 struct lexer
 {
   lexer(const keyword_table&, symbol_table&, const char*, const char*);
   lexer(const keyword_table&, symbol_table&, const std::string&);
+  ~lexer();
 
   token* lex();
 
@@ -75,4 +77,8 @@ private:
 
   /// Stores characters that form the current token.
   std::string buf;
+
+  /// Stores each token created by the lexer. These are deleted when the
+  /// lexer is destroyed.
+  std::vector<token*> toks;
 };
