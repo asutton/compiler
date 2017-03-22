@@ -162,6 +162,7 @@ stmt*
 parser::expression_statement()
 {
   expr* e = expression();
+  match(semicolon_tok);
   return sema.on_expression_statement(e);
 }
 
@@ -305,6 +306,7 @@ parser::primary_expression()
     default:
       break;
   }
+  std::cout << peek() << '\n';
   throw std::runtime_error("expected primary-expression");
 }
 
@@ -324,4 +326,3 @@ parser::identifier()
   token* id = match(id_tok);
   return sema.on_identifier(id);
 }
-

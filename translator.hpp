@@ -1,6 +1,7 @@
 #pragma once
 
 #include "symbols.hpp"
+#include "scope.hpp"
 
 #include <vector>
 
@@ -48,4 +49,7 @@ struct translator
 
   /// The context provides facilities for creating abstract syntax trees.
   context* cxt;
+
+  /// The name binding environment.
+  environment env;
 };

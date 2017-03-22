@@ -7,6 +7,7 @@ add_executable(compile
   tokens.cpp
   lexer.cpp
   parser.cpp
+  scope.cpp
   translator.cpp
   types.cpp
   exprs.cpp
