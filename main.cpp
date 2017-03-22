@@ -14,6 +14,7 @@ int main()
   std::string input(std::istreambuf_iterator<char>(std::cin),
                     std::istreambuf_iterator<char>());
 
+  // Lex the input and print all of the tokens.
   lexer l(keywords, symbols, input);
   while (token* tok = l.lex()) {
     std::cout << tok << '\n';
